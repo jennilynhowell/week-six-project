@@ -13,16 +13,21 @@ const app = express();
 app.engine('mustache', mustacheExpress());
 app.set('view engine', 'mustache');
 app.set('views', path.join(__dirname, 'views'));
+app.set('layout', 'layout');
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(validator());
+
+// //make an app.use to use the router and declare any prefix url if needed
+// app.use('/user', )
 
 //register session
-// app.use(session({
-//   secret: 'unicorn cats',
-//   resave: false,
-//   saveUninitialized: true
-// }));
+app.use(session({
+  secret: 'unicorn cats',
+  resave: false,
+  saveUninitialized: true
+}));
 
 //require user to be logged in
 // app.use(req, res, next){
@@ -30,8 +35,14 @@ app.use(bodyParser.urlencoded({extended:false}));
 //   ...
 // }
 
+//store stuff in session
+// app.use(function(req, res, next){
+//   const sess = req.session;
+//   if (!sess.userId){
+//   return next();
+//   }
+// })
+
 routes(app);
-
-
 
 app.listen(3000);

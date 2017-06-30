@@ -1,0 +1,52 @@
+make sure you have express-session and require it in your app
+
+refresh on how routes works
+
+figure out how layout works (makes html dry)
+*be sure to include login/signout buttons in your header
+*use {{{yield}}} at the bottom of your base.mustache
+
+app.use session: secret: 'keyboard cat', resave: false, saveUninitialized: false
+
+require session-- includes lookup for the user
+app.use(function(req, res, next){
+  const sess = req.session;
+  if (!sess.userId){
+  return next();
+  }
+}).............
+
+//routes
+//render signup view
+app.get('/signup', function(req, res){
+  res.render('users/signup');
+})
+
+(he has views>users>signup.mustache)
+
+app.use('users', require('./routes/users')) routes for users in one file
+
+signup form gets a post route
+router.post('/signup', function(req, res){
+  req.checkBody('username', 'Username must not be empty').notEmpty
+  req.checkBody('password', 'Password cannot be empty').notEmpty
+  req.checkBody('passwordconf', 'Please confirm password').notEmpty
+  etc...
+
+  req.getValidationResult().then(function(result){
+    if (result.isEmpty()) {
+      models.User.create({
+        username: req.body.username,
+        password: req.body.password
+      }).then(function(newUser){
+        req.session.userId = newUser.id;
+        console.log('newUser.id', newUser.id);
+        console.log('session.userId', req.session.userId);
+        res.redirect('/');
+      })
+
+    } else {
+      res.render('users/signup', {errors: result.mapped(), username: req.body.username}) [passing context object]
+    }
+  })
+})
