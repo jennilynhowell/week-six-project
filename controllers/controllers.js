@@ -3,7 +3,7 @@ const session = require('express-session');
 
 module.exports = {
   home: function(req, res){
-    res.redirect('/signup');
+    res.redirect('/user/signup');
   },
 
   //SIGNUP
@@ -66,7 +66,9 @@ module.exports = {
           req.session.user = user.id;
           req.session.name = user.username;
           console.log('user.id', user.id);
-          console.log('session.userId', req.session.user);
+          console.log('session.user', req.session.user);
+          console.log('user.username', user.username);
+          console.log('session.name', req.session.name);
           let id = user.id;
           res.redirect('/gab/' + id);
         })
@@ -80,11 +82,26 @@ module.exports = {
   //GAB HOME
   gabHome: function(req, res) {
 
+    models.Post.findAll().then(function(posts){
+      let context = {
+        user: req.session.name,
+        posts: posts
+      }
+      res.render('home', context);
+    })
 
-    let context = {
-      user: req.session.name,
-    };
-    res.render('home', context);
+  },
+
+  newGab: function(req, res) {
+    models.Post.create(
+      {
+        post: req.body.post,
+        userId: req.session.user
+      }).then(function(){
+      models.Post.findAll({order: [['createdAt', 'DESC']]}).then(function(posts){
+      res.render('home', {posts:posts, user:req.session.name})
+    })
+    })
   },
 
 

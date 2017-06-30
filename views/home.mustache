@@ -1,4 +1,23 @@
 <section class="container home-container">
   <h1>Hey there, {{user}}!</h1>
+  <form class="form-group" action="/gab/new" method="post">
+    <textarea name="post" value="" placeholder="New Gab" cols="30"></textarea>
+    <input class="form-control btn btn-primary" type="submit" name="newPost" value="Gab it!">
+  </form>
+</section>
 
+<section class="container post-container">
+<h3>Recent Gabs</h3>
+{{#posts}}
+<div class="container">
+  <ul class="list-unstyled">
+    <li>{{post}}</li>
+    <li>By: {{user}}</li>
+    <li>On: {{createdAt}}</li>
+    <li><form class="form-inline" action="/like" method="post">
+      <input type="submit" name="like" value="Like" class="form-control btn btn-primary">
+    </form></li>
+  </ul>
+</div>
+{{/posts}}
 </section>

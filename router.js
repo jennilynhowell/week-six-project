@@ -22,14 +22,15 @@ module.exports = function(app){
   const gabRouter = express.Router();
 
   // mount these after /user
-  userRouter.get('signup', controllers.signup);
-  userRouter.post('signup', controllers.signupPost);
-  userRouter.get('login', controllers.login);
-  userRouter.post('login', controllers.loginPost);
-  app.use('/', userRouter);
+  userRouter.get('/signup', controllers.signup);
+  userRouter.post('/signup', controllers.signupPost);
+  userRouter.get('/login', controllers.login);
+  userRouter.post('/login', controllers.loginPost);
+  app.use('/user', userRouter);
 
   //mount these after /gab
   gabRouter.get('/:id', controllers.gabHome);
+  gabRouter.post('/new', controllers.newGab);
   app.use('/gab', gabRouter);
 
   // app.use('/home', homeRouter);
