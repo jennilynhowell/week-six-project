@@ -13,8 +13,10 @@
       <nav>
         <ul class="list-inline list-unstyled">
           <li class="navbar-brand"><span class="glyphicon glyphicon-comment"></span><a href="">Gabble</a></li>
-          <li><a href="">Logged in as {{user}}</a></li>
-          <li><a href="">Log Out</a></li>
+          {{#user}}
+          <li>Logged in as {{user}}</li>
+          {{/user}}
+          <li><a href="/logout">Log Out</a></li>
         </ul>
       </nav>
 

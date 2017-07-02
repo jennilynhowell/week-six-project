@@ -18,6 +18,8 @@ const controllers = require('./controllers/controllers.js');
 
 module.exports = function(app){
   app.get('/', controllers.home);
+  app.get('/logout', controllers.logOut);
+
   const userRouter = express.Router();
   const gabRouter = express.Router();
 

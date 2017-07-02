@@ -80,29 +80,53 @@ module.exports = {
   },
 
   //GAB HOME
+  //request
   gabHome: function(req, res) {
-
-    models.Post.findAll().then(function(posts){
-      let context = {
-        user: req.session.name,
-        posts: posts
-      }
-      res.render('home', context);
+    models.Post.findAll({
+      include: [
+        {
+          model: models.User,
+          as: 'user'}
+      ],
+      order: [['createdAt', 'DESC']]
+      }).then(function(posts){
+        console.log();
+        let context = {
+          user: req.session.name,
+          posts: posts
+        }
+        res.render('home', context);
     })
 
   },
 
+  //post new
   newGab: function(req, res) {
     models.Post.create(
       {
         post: req.body.post,
         userId: req.session.user
       }).then(function(){
-      models.Post.findAll({order: [['createdAt', 'DESC']]}).then(function(posts){
-      res.render('home', {posts:posts, user:req.session.name})
+      models.Post.findAll({
+        include: [
+          {
+            model: models.User,
+            as: 'user'}
+        ],
+        order: [['createdAt', 'DESC']]
+        }).then(function(posts){
+        res.render('home', {posts:posts, otherUsers:Post.user, user:req.session.name});
     })
     })
   },
+
+
+
+  logOut: function(req, res){
+    delete req.session.user;
+    delete req.session.name;
+    res.redirect('/user/login');
+  }
 
 
 
