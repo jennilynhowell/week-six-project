@@ -14,7 +14,7 @@
     <li>{{post}}</li>
     <li>By: {{user.username}}</li>
     <li>On: {{createdAt}}</li>
-    <li>Likes: {{like.postLikes}}</li>
+    <li>Likes: {{likeCount}}</li>
     <li><form class="form-inline" action="/gab/like" method="post">
       <input type="hidden" name="id" value="{{id}}">
       <input type="submit" name="like" value="Like" class="form-control btn btn-primary">

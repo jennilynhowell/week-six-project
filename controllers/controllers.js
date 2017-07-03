@@ -81,20 +81,27 @@ module.exports = {
   },
 
   //GAB HOME
-  //request
+  //get request
   gabHome: function(req, res) {
     models.Post.findAll({
       include: [
         {
           model: models.User,
-          as: 'user'}
+          as: 'user',
+        },
+        {
+          model: models.User,
+          as: 'postLikes'
+        }
       ],
       order: [['createdAt', 'DESC']]
       }).then(function(posts){
-        console.log();
+        posts.forEach(function(post){
+          post['likeCount'] = post.postLikes.length;
+        });
         let context = {
           user: req.session.name,
-          posts: posts
+          posts: posts,
         }
         res.render('home', context);
     })
@@ -112,13 +119,25 @@ module.exports = {
         include: [
           {
             model: models.User,
-            as: 'user'}
+            as: 'user',
+          },
+          {
+            model: models.User,
+            as: 'postLikes'
+          }
         ],
         order: [['createdAt', 'DESC']]
         }).then(function(posts){
-          res.render('home', {posts:posts, user:req.session.name});
-    })
-    })
+          posts.forEach(function(post){
+            post['likeCount'] = post.postLikes.length;
+          });
+          let context = {
+            user: req.session.name,
+            posts: posts,
+          }
+          res.render('home', context);
+        });
+      });
   },
 
   like: function(req, res){
@@ -130,19 +149,25 @@ module.exports = {
         include: [
           {
             model: models.User,
-            as: 'user'
+            as: 'user',
           },
           {
-            model: models.Like,
+            model: models.User,
             as: 'postLikes'
           }
         ],
         order: [['createdAt', 'DESC']]
       }).then(function(posts){
-        console.log(posts);
-        res.render('home', {posts:posts, user: req.session.name});
-      })
-    })
+        posts.forEach(function(post){
+          post['likeCount'] = post.postLikes.length;
+        });
+        let context = {
+          user: req.session.name,
+          posts: posts,
+        }
+        res.render('home', context);
+      });
+    });
   },
 
 
