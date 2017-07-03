@@ -26,6 +26,7 @@ module.exports = {
           username: newUser,
           password: password
           //then log in the new user
+    //TODO fix this... it's not automatically logging in new users
         }).then(function(user){
           req.session.user = user.id;
           req.session.name = user.name;
@@ -115,8 +116,32 @@ module.exports = {
         ],
         order: [['createdAt', 'DESC']]
         }).then(function(posts){
-        res.render('home', {posts:posts, otherUsers:Post.user, user:req.session.name});
+          res.render('home', {posts:posts, user:req.session.name});
     })
+    })
+  },
+
+  like: function(req, res){
+    models.Like.create({
+      postId: req.body.id,
+      userId: req.session.user
+    }).then(function(){
+      models.Post.findAll({
+        include: [
+          {
+            model: models.User,
+            as: 'user'
+          },
+          {
+            model: models.Like,
+            as: 'postLikes'
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      }).then(function(posts){
+        console.log(posts);
+        res.render('home', {posts:posts, user: req.session.name});
+      })
     })
   },
 

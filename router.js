@@ -28,11 +28,13 @@ module.exports = function(app){
   userRouter.post('/signup', controllers.signupPost);
   userRouter.get('/login', controllers.login);
   userRouter.post('/login', controllers.loginPost);
+
   app.use('/user', userRouter);
 
   //mount these after /gab
   gabRouter.get('/:id', controllers.gabHome);
   gabRouter.post('/new', controllers.newGab);
+  gabRouter.post('/like', controllers.like);
   app.use('/gab', gabRouter);
 
   // app.use('/home', homeRouter);
