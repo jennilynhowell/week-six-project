@@ -1,6 +1,26 @@
 const models = require('../models');
 const session = require('express-session');
 
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO create displayGabs function for render callbacks
+
+// const displayGabs = function(posts){
+//   posts.forEach(function(post){
+//     post.likeCount = post.postLikes.length;
+//     post.userName = post.user.username;
+//     post.canLike = true;
+//
+//     if (post.userName == req.session.name) {
+//       post.userName = 'You';
+//       post.canLike = false;
+//     };
+//   });
+//   let context = {
+//     user: req.session.name,
+//     posts: posts,
+//   };
+//   res.render('home', context);
+// };
+
 module.exports = {
   home: function(req, res){
     res.redirect('/user/signup');
@@ -26,7 +46,7 @@ module.exports = {
           username: newUser,
           password: password
           //then log in the new user
-    //TODO fix this... it's not automatically logging in new users
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO fix this... it's not automatically logging in new users
         }).then(function(user){
           req.session.user = user.id;
           req.session.name = user.name;
@@ -82,30 +102,29 @@ module.exports = {
 
   //GAB HOME
   //get request
-  gabHome: function(req, res) {
+  gabHome: function(req, res){
     models.Post.findAll({
       include: [
-        {
-          model: models.User,
-          as: 'user',
-        },
-        {
-          model: models.User,
-          as: 'postLikes'
-        }
+        {model: models.User, as: 'user'},
+        {model: models.User, as: 'postLikes'}
       ],
       order: [['createdAt', 'DESC']]
-      }).then(function(posts){
-        posts.forEach(function(post){
-          post['likeCount'] = post.postLikes.length;
-        });
-        let context = {
-          user: req.session.name,
-          posts: posts,
+    }).then(function(posts){
+      posts.forEach(function(post){
+        post.likeCount = post.postLikes.length;
+        post.userName = post.user.username;
+        post.canLike = true;
+        if(post.userName == req.session.name) {
+          post.userName = 'You';
+          post.canLike = false;
         }
-        res.render('home', context);
-    })
-
+      });
+      let context = {
+        user: req.session.name,
+        posts: posts
+      }
+      res.render('home', context);
+    });
   },
 
   //post new
@@ -129,17 +148,24 @@ module.exports = {
         order: [['createdAt', 'DESC']]
         }).then(function(posts){
           posts.forEach(function(post){
-            post['likeCount'] = post.postLikes.length;
+            post.likeCount = post.postLikes.length;
+            post.userName = post.user.username;
+            post.canLike = true;
+            if(post.userName == req.session.name) {
+              post.userName = 'You';
+              post.canLike = false;
+            }
           });
           let context = {
             user: req.session.name,
-            posts: posts,
+            posts: posts
           }
           res.render('home', context);
         });
       });
   },
 
+  //like a post
   like: function(req, res){
     models.Like.create({
       postId: req.body.id,
@@ -159,15 +185,59 @@ module.exports = {
         order: [['createdAt', 'DESC']]
       }).then(function(posts){
         posts.forEach(function(post){
-          post['likeCount'] = post.postLikes.length;
+          post.likeCount = post.postLikes.length;
+          post.userName = post.user.username;
+          post.canLike = true;
+          if(post.userName == req.session.name) {
+            post.userName = 'You';
+            post.canLike = false;
+          }
         });
         let context = {
           user: req.session.name,
-          posts: posts,
+          posts: posts
         }
         res.render('home', context);
       });
     });
+  },
+
+  delete: function(req, res){
+    models.Post.destroy({
+      where: {
+        id: req.body.id,
+        userId: req.session.user
+      }
+    }).then(function(){
+      models.Post.findAll({
+        include: [
+          {
+            model: models.User,
+            as: 'user',
+          },
+          {
+            model: models.User,
+            as: 'postLikes'
+          }
+        ],
+        order: [['createdAt', 'DESC']]
+      }).then(function(posts){
+      posts.forEach(function(post){
+        post.likeCount = post.postLikes.length;
+        post.userName = post.user.username;
+        post.canLike = true;
+        if(post.userName == req.session.name) {
+          post.userName = 'You';
+          post.canLike = false;
+        }
+      });
+      let context = {
+        user: req.session.name,
+        posts: posts
+      }
+      res.render('home', context);
+    });
+  });
   },
 
 

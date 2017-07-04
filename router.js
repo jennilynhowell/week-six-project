@@ -35,6 +35,7 @@ module.exports = function(app){
   gabRouter.get('/:id', controllers.gabHome);
   gabRouter.post('/new', controllers.newGab);
   gabRouter.post('/like', controllers.like);
+  gabRouter.post('/delete', controllers.delete);
   app.use('/gab', gabRouter);
 
   // app.use('/home', homeRouter);

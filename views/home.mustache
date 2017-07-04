@@ -12,13 +12,21 @@
 <div class="container">
   <ul class="list-unstyled">
     <li>{{post}}</li>
-    <li>By: {{user.username}}</li>
+    <li>By: {{userName}}</li>
     <li>On: {{createdAt}}</li>
     <li>Likes: {{likeCount}}</li>
+    {{#canLike}}
     <li><form class="form-inline" action="/gab/like" method="post">
       <input type="hidden" name="id" value="{{id}}">
       <input type="submit" name="like" value="Like" class="form-control btn btn-primary">
     </form></li>
+    {{/canLike}}
+    {{^canLike}}
+    <li><form class="form-inline" action="/gab/delete" method="post">
+      <input type="hidden" name="id" value="{{id}}">
+      <input type="submit" name="delete" value="Delete Gab" class="form-control btn btn-primary">
+    </form></li>  
+    {{/canLike}}
   </ul>
 </div>
 {{/posts}}
