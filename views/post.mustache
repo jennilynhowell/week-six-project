@@ -1,8 +1,14 @@
 <section class="container">
   <h3>Post by: {{userName}}</h3>
-  <p>{{createdAt}}</p>
+  <p><b>On: </b>{{createdAt}}</p>
   <p><b>Likes: </b>{{likeCount}}</p>
-  <article class="bg-info">
-    <p class="lead"> {{post}}</p>
+  <article class="container">
+    <p class="lead bg-info"> {{post.post}}</p>
+    <p><b>Liked by:</b></p>
+    {{#likes}}
+    <ul class="list-inline list-unstyled">
+      <li>{{username}}</li>
+    </ul>
+    {{/likes}}
   </article>
 </section>

@@ -50,8 +50,6 @@ module.exports = {
         }).catch(Sequelize.UniqueConstraintError, function (err) {console.log('Username not unique!')}).then(function(user){
             req.session.user = user.id;
             req.session.name = user.username;
-            console.log('user.id', user.id);
-            console.log('session.userId', req.session.user);
             let id = user.id;
             res.redirect('/gab/' + id);
           })
@@ -86,10 +84,6 @@ module.exports = {
         }).then(function(user){
           req.session.user = user.id;
           req.session.name = user.username;
-          console.log('user.id', user.id);
-          console.log('session.user', req.session.user);
-          console.log('user.username', user.username);
-          console.log('session.name', req.session.name);
           let id = user.id;
           res.redirect('/gab/' + id);
         })
@@ -245,14 +239,38 @@ module.exports = {
 
   //view gab on one page, showing likes
   viewGab: function(req, res){
+    let gabId = req.body.id;
+    res.redirect('/gab/viewGab/' + gabId);
+  },
+
+  displayGab: function(req, res){
     models.Post.findOne({
       where: {
-        id: req.body.id,
-      }
-    }).then(function(post){
+        id: req.params.gabId,
+      },
+      include: [
+        {
+          model: models.User,
+          as: 'user',
+        },
+        {
+          model: models.User,
+          as: 'postLikes'
+        }
+      ],
+    }).then(function(post) {
+      let likes = []
+        , postLikes = post.postLikes;
+      postLikes.forEach(function(like){
+        likes.push(like);
+      });
       let context = {
         post: post,
-      }
+        userName: post.user.username,
+        createdAt: post.createdAt,
+        likeCount: post.postLikes.length,
+        likes: likes
+      };
       res.render('post', context);
     })
   },

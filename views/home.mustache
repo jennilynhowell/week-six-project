@@ -27,7 +27,7 @@
       <input type="submit" name="delete" value="Delete Gab" class="form-control btn btn-primary">
     </form></li>
     {{/canLike}}
-    <li><form class="form-inline" action="/gab/viewGab" method="get">
+    <li><form class="form-inline" action="/gab/viewGab/:gabId" method="post">
       <input type="hidden" name="id" value="{{id}}">
       <input type="submit" name="view" value="View Gab" class="form-control btn btn-primary">
     </form></li>
