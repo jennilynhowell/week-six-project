@@ -46,15 +46,15 @@ module.exports = {
           username: newUser,
           password: password
           //then log in the new user
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO fix this... it's not automatically logging in new users
-        }).then(function(user){
-          req.session.user = user.id;
-          req.session.name = user.name;
-          console.log('user.id', user.id);
-          console.log('session.userId', req.session.user);
-          let id = user.id;
-          res.redirect('/gab/' + id);
-        })
+//TODO how do I get this catch to display an error on screen?
+        }).catch(Sequelize.UniqueConstraintError, function (err) {console.log('Username not unique!')}).then(function(user){
+            req.session.user = user.id;
+            req.session.name = user.username;
+            console.log('user.id', user.id);
+            console.log('session.userId', req.session.user);
+            let id = user.id;
+            res.redirect('/gab/' + id);
+          })
       } else {
         res.render('signup', {errors: result.mapped(), username: req.body.username});
       }
@@ -160,6 +160,7 @@ module.exports = {
             user: req.session.name,
             posts: posts
           }
+//TODO should this redirect??
           res.render('home', context);
         });
       });
@@ -197,6 +198,7 @@ module.exports = {
           user: req.session.name,
           posts: posts
         }
+//TODO should this redirect??
         res.render('home', context);
       });
     });
@@ -235,9 +237,24 @@ module.exports = {
         user: req.session.name,
         posts: posts
       }
+//TODO should this redirect??
       res.render('home', context);
     });
   });
+  },
+
+  //view gab on one page, showing likes
+  viewGab: function(req, res){
+    models.Post.findOne({
+      where: {
+        id: req.body.id,
+      }
+    }).then(function(post){
+      let context = {
+        post: post,
+      }
+      res.render('post', context);
+    })
   },
 
 

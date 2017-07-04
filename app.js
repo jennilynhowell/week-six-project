@@ -19,8 +19,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(validator());
 
-// //make an app.use to use the router and declare any prefix url if needed
-// app.use('/user', )
 
 //register session
 app.use(session({
@@ -30,18 +28,18 @@ app.use(session({
 }));
 
 //require user to be logged in
-// app.use(req, res, next){
-//   let pathname = parseurl(req).pathname;
-//   ...
-// }
+app.use(function(req, res, next){
+  let pathname = parseurl(req).pathname
+    , sess = req.session;
 
-//store stuff in session
-// app.use(function(req, res, next){
-//   const sess = req.session;
-//   if (!sess.userId){
-//   return next();
-//   }
-// })
+  if (!sess.user && (!pathname.includes('/user'))){
+    res.redirect('/user/login');
+  } else {
+    next();
+  }
+
+});
+
 
 routes(app);
 
