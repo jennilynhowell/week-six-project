@@ -1,26 +1,6 @@
 const models = require('../models');
 const session = require('express-session');
-
-
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO create displayGabs function for render callbacks
-
-// const displayGabs = function(posts){
-//   posts.forEach(function(post){
-//     post.likeCount = post.postLikes.length;
-//     post.userName = post.user.username;
-//     post.canLike = true;
-//
-//     if (post.userName == req.session.name) {
-//       post.userName = 'You';
-//       post.canLike = false;
-//     };
-//   });
-//   let context = {
-//     user: req.session.name,
-//     posts: posts,
-//   };
-//   res.render('home', context);
-// };
+const Sequelize = require('sequelize');
 
 module.exports = {
   home: function(req, res){
@@ -33,7 +13,6 @@ module.exports = {
   },
 
   signupPost: function(req, res) {
-//TODO none of the sequelize validation crap is working!!!!
     //validate form
     req.checkBody('username', 'Please pick a username').notEmpty();
     req.checkBody('password', 'Please pick a password').notEmpty();
@@ -53,7 +32,7 @@ module.exports = {
           console.log(user);
         }).catch(Sequelize.UniqueConstraintError, function (err) {
           error = {message: 'Sorry, that username is taken', err: err, username: newUser, password: password};
-          res.render('signup', error);
+          res.render('signup', { error: error });
         }).catch(Sequelize.ValidationError, function (err) {
           error = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
           res.render('signup', error);
