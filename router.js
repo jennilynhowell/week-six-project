@@ -17,6 +17,7 @@ const controllers = require('./controllers/controllers.js');
   //   --this is going to req dynamic routing
 
 module.exports = function(app){
+
   app.get('/', controllers.home);
   app.get('/logout', controllers.logOut);
 

@@ -1,6 +1,7 @@
 const models = require('../models');
 const session = require('express-session');
 
+
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! TODO create displayGabs function for render callbacks
 
 // const displayGabs = function(posts){
@@ -32,10 +33,11 @@ module.exports = {
   },
 
   signupPost: function(req, res) {
+//TODO none of the sequelize validation crap is working!!!!
     //validate form
     req.checkBody('username', 'Please pick a username').notEmpty();
     req.checkBody('password', 'Please pick a password').notEmpty();
-    req.checkBody('passconf', "Oops, your passwords don't match").notEmpty()/*.matches()*/;
+    req.checkBody('passconf', "Oops, your passwords don't match").notEmpty().equals(req.body.password);
 
     //if form checks out, create user
     req.getValidationResult().then(function(result){
@@ -45,16 +47,32 @@ module.exports = {
         models.User.create({
           username: newUser,
           password: password
-          //then log in the new user
-//TODO how do I get this catch to display an error on screen?
-        }).catch(Sequelize.UniqueConstraintError, function (err) {console.log('Username not unique!')}).then(function(user){
+
+        }).then(function(user){
+          //catch and display errors
+          console.log(user);
+        }).catch(Sequelize.UniqueConstraintError, function (err) {
+          error = {message: 'Sorry, that username is taken', err: err, username: newUser, password: password};
+          res.render('signup', error);
+        }).catch(Sequelize.ValidationError, function (err) {
+          error = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', error);
+        }).catch(function (err) {
+          // handle all other errors
+          error = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', error);
+        }).then(function(user){
+        //then log in the new user
             req.session.user = user.id;
             req.session.name = user.username;
             let id = user.id;
             res.redirect('/gab/' + id);
           })
       } else {
-        res.render('signup', {errors: result.mapped(), username: req.body.username});
+        errors = result.mapped();
+        firstError = result.array();
+        console.log(firstError[0].msg);
+        res.render('signup', {errors: firstError[0].msg, username: req.body.username});
       }
     })
   },
@@ -140,24 +158,11 @@ module.exports = {
           }
         ],
         order: [['createdAt', 'DESC']]
-        }).then(function(posts){
-          posts.forEach(function(post){
-            post.likeCount = post.postLikes.length;
-            post.userName = post.user.username;
-            post.canLike = true;
-            if(post.userName == req.session.name) {
-              post.userName = 'You';
-              post.canLike = false;
-            }
-          });
-          let context = {
-            user: req.session.name,
-            posts: posts
-          }
-//TODO should this redirect??
-          res.render('home', context);
+      }).then(function(){
+          res.redirect('/gab/' + req.session.user);
         });
       });
+
   },
 
   //like a post
@@ -178,23 +183,9 @@ module.exports = {
           }
         ],
         order: [['createdAt', 'DESC']]
-      }).then(function(posts){
-        posts.forEach(function(post){
-          post.likeCount = post.postLikes.length;
-          post.userName = post.user.username;
-          post.canLike = true;
-          if(post.userName == req.session.name) {
-            post.userName = 'You';
-            post.canLike = false;
-          }
+      }).then(function(){
+          res.redirect('/gab/' + req.session.user);
         });
-        let context = {
-          user: req.session.name,
-          posts: posts
-        }
-//TODO should this redirect??
-        res.render('home', context);
-      });
     });
   },
 
@@ -217,24 +208,10 @@ module.exports = {
           }
         ],
         order: [['createdAt', 'DESC']]
-      }).then(function(posts){
-      posts.forEach(function(post){
-        post.likeCount = post.postLikes.length;
-        post.userName = post.user.username;
-        post.canLike = true;
-        if(post.userName == req.session.name) {
-          post.userName = 'You';
-          post.canLike = false;
-        }
+      }).then(function(){
+          res.redirect('/gab/' + req.session.user);
+        });
       });
-      let context = {
-        user: req.session.name,
-        posts: posts
-      }
-//TODO should this redirect??
-      res.render('home', context);
-    });
-  });
   },
 
   //view gab on one page, showing likes

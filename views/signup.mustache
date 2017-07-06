@@ -1,8 +1,10 @@
 <section class="container">
   <h3>Sign up for Gabble!</h3>
+  {{#error}}<p class="bg-warning">{{message}}</p>{{/error}}
+  {{#errors}}<p class="bg-warning">{{.}}</p>{{/errors}}
   <form class="form-group" action="/user/signup" method="POST">
-    <input class="form-control" type="text" name="username" value="" placeholder="Username">
-    <input class="form-control" type="password" name="password" value="" placeholder="Password">
+    <input class="form-control" type="text" name="username" value="{{username}}" placeholder="Username">
+    <input class="form-control" type="password" name="password" value="{{password}}" placeholder="Password">
     <input class="form-control" type="password" name="passconf" value="" placeholder="Confirm Password">
     <input class="form-control btn btn-primary" type="submit" name="signup" value="Sign up!">
   </form>
