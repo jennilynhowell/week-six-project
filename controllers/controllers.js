@@ -1,6 +1,7 @@
 const models = require('../models');
 const session = require('express-session');
 const Sequelize = require('sequelize');
+const moment = require('moment');
 
 module.exports = {
   home: function(req, res){
@@ -105,14 +106,17 @@ module.exports = {
         post.likeCount = post.postLikes.length;
         post.userName = post.user.username;
         post.canLike = true;
+        date = moment(post.createdAt, moment.ISO_8601).calendar();
+        post.posted = date;
         if(post.userName == req.session.name) {
           post.userName = 'You';
           post.canLike = false;
         }
+
       });
       let context = {
         user: req.session.name,
-        posts: posts
+        posts: posts,
       }
       res.render('home', context);
     });
@@ -216,14 +220,15 @@ module.exports = {
       ],
     }).then(function(post) {
       let likes = []
-        , postLikes = post.postLikes;
+        , postLikes = post.postLikes
+        , date = moment(post.createdAt, moment.ISO_8601).calendar();
       postLikes.forEach(function(like){
         likes.push(like);
       });
       let context = {
         post: post,
         userName: post.user.username,
-        createdAt: post.createdAt,
+        posted: date,
         likeCount: post.postLikes.length,
         likes: likes
       };

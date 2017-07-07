@@ -1,9 +1,10 @@
-<section class="container">
-  <h3>Post by: {{userName}}</h3>
-  <p><b>On: </b>{{createdAt}}</p>
+<section class="container gab-view">
+  <h3>Gab by: {{userName}}</h3>
+  <p><b>Gabbed: </b>{{posted}}</p>
   <p><b>Likes: </b>{{likeCount}}</p>
-  <article class="container">
-    <p class="lead bg-info"> {{post.post}}</p>
+
+  <article class="container gab-view-div">
+    <p class="lead bg-info gab-text"> {{post.post}}</p>
     <p><b>Liked by:</b></p>
     {{#likes}}
     <ul class="list-inline list-unstyled">

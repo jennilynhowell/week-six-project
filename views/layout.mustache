@@ -8,17 +8,22 @@
     {{/title}}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Trocchi" rel="stylesheet">
   </head>
 
   <body class="container">
-    <header class="navbar navbar-default">
+    <header class="navbar navbar-default navbar-fixed-top">
       <nav>
         <ul class="list-inline list-unstyled">
-          <li class="navbar-brand"><span class="glyphicon glyphicon-comment"></span><a href="">Gabble</a></li>
+          <li class="navbar-brand"><span class="glyphicon glyphicon-comment"></span><a href="/"> Gabble</a></li>
           {{#user}}
-          <li>Logged in as {{user}}</li>
+          <li class="logout navbar-right">Logged in as {{user}} <a href="/logout">Log Out</a></li>
           {{/user}}
-          <li><a href="/logout">Log Out</a></li>
+
+          {{^user}}
+          <li class="logout navbar-right"><a href="/user/login">Log In</a></li>
+          {{/user}}
+          <li></li>
         </ul>
       </nav>
     </header>
