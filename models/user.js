@@ -8,7 +8,17 @@ module.exports = function(sequelize, DataTypes) {
         isAlpha: true
       }
     },
-    password: DataTypes.STRING
+    password: {
+      type: DataTypes.STRING,
+      validate: {
+        matchPass: function() {
+          if (password != this.password) {
+            throw new Error('Log-in validation error.');
+          }
+        }
+      }
+    }
+
   }, {});
 
   User.associate = function(models) {

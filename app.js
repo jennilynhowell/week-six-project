@@ -30,17 +30,17 @@ app.use(session({
 }));
 
 // //require user to be logged in
-// app.use(function(req, res, next){
-//   let pathname = parseurl(req).pathname
-//     , sess = req.session;
-//
-//   if (!sess.user && (!pathname.includes('/user'))){
-//     res.redirect('/user/login');
-//   } else {
-//     next();
-//   }
-//
-// });
+app.use(function(req, res, next){
+  let pathname = parseurl(req).pathname
+    , sess = req.session;
+
+  if (!sess.user && (!pathname.includes('/user'))){
+    res.redirect('/user/login');
+  } else {
+    next();
+  }
+
+});
 
 
 routes(app);

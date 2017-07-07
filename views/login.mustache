@@ -1,5 +1,6 @@
 <section class="container form-div">
   <h3>Welcome back to Gabble!</h3>
+  {{#seqError}}<p class="bg-warning">{{message}}</p>{{/seqError}}
   <form class="form-group" action="/user/login" method="POST">
     <input class="form-control" type="text" name="username" value="" placeholder="Username">
     <input class="form-control" type="password" name="password" value="" placeholder="Password">

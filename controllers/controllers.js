@@ -32,15 +32,15 @@ module.exports = {
           //catch and display errors
           console.log(user);
         }).catch(Sequelize.UniqueConstraintError, function (err) {
-          error = {message: 'Sorry, that username is taken', err: err, username: newUser, password: password};
-          res.render('signup', { error: error });
+          seqError = {message: 'Sorry, that username is taken', err: err, username: newUser, password: password};
+          res.render('signup', { seqError: seqError });
         }).catch(Sequelize.ValidationError, function (err) {
-          error = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
-          res.render('signup', error);
+          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', seqError);
         }).catch(function (err) {
           // handle all other errors
-          error = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
-          res.render('signup', error);
+          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', seqError);
         }).then(function(user){
         //then log in the new user
             req.session.user = user.id;
@@ -79,7 +79,15 @@ module.exports = {
             password: req.body.password
           }
           //then log in
-        }).then(function(user){
+//TODO how to get the custom validator to work?
+        }).catch(function (err) {
+          // handle all other errors
+          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', seqError);
+        })/*.catch(User.validate.matchPass(username, password){
+          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
+          res.render('signup', seqError);
+        })*/.then(function(user){
           req.session.user = user.id;
           req.session.name = user.username;
           let id = user.id;
