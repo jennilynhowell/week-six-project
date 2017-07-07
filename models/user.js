@@ -8,16 +8,7 @@ module.exports = function(sequelize, DataTypes) {
         isAlpha: true
       }
     },
-    password: {
-      type: DataTypes.STRING,
-      validate: {
-        matchPass: function() {
-          if (password != this.password) {
-            throw new Error('Log-in validation error.');
-          }
-        }
-      }
-    }
+    password: DataTypes.STRING
 
   }, {});
 

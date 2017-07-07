@@ -79,15 +79,13 @@ module.exports = {
             password: req.body.password
           }
           //then log in
-//TODO how to get the custom validator to work?
-        }).catch(function (err) {
-          // handle all other errors
-          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
-          res.render('signup', seqError);
-        })/*.catch(User.validate.matchPass(username, password){
-          seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
-          res.render('signup', seqError);
-        })*/.then(function(user){
+        }).then(function(user){
+          if(!user) {
+            seqError = {message: 'Oh no! Something went wrong.'};
+            res.render('login', { seqError: seqError});
+            return;
+          }
+
           req.session.user = user.id;
           req.session.name = user.username;
           let id = user.id;
@@ -227,6 +225,7 @@ module.exports = {
         }
       ],
     }).then(function(post) {
+      console.log(post);
       let likes = []
         , postLikes = post.postLikes
         , date = moment(post.createdAt, moment.ISO_8601).calendar();
@@ -244,16 +243,11 @@ module.exports = {
     })
   },
 
-
-
   logOut: function(req, res){
     delete req.session.user;
     delete req.session.name;
     res.redirect('/user/login');
   }
-
-
-
 
 
   //end exports obj
