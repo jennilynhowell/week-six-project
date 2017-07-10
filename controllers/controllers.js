@@ -21,6 +21,8 @@ module.exports = {
 
     //if form checks out, create user
     req.getValidationResult().then(function(result){
+      var user;
+
       if(result.isEmpty()) {
         let newUser = req.body.username
           , password = req.body.password;
@@ -28,9 +30,9 @@ module.exports = {
           username: newUser,
           password: password
 
-        }).then(function(user){
+        }).then(function(_user){
+          user = _user;
           //catch and display errors
-          console.log(user);
         }).catch(Sequelize.UniqueConstraintError, function (err) {
           seqError = {message: 'Sorry, that username is taken', err: err, username: newUser, password: password};
           res.render('signup', { seqError: seqError });
@@ -41,8 +43,9 @@ module.exports = {
           // handle all other errors
           seqError = {message: 'Oh no! Something went wrong.', err: err, username: newUser, password: password};
           res.render('signup', seqError);
-        }).then(function(user){
+        }).then(function(){
         //then log in the new user
+            console.log(user);
             req.session.user = user.id;
             req.session.name = user.username;
             let id = user.id;
