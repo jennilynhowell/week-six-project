@@ -1,6 +1,9 @@
 # week-six-project
 TIY Week 6 Project: twitter-like web app
 
+## Demonstrate understanding of relational database, including many:many.
+Completed July 2017
+
 Use Express and Sequelize to build a social network for students. This network, called "Gabble," has users, public messages, and likes.
 
 Users should:
